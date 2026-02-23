@@ -1,0 +1,28 @@
+name: Compile Test Tunes
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch: # Gives us a button to trigger it manually in the Actions tab
+
+jobs:
+  build-media:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # THIS IS THE MAGIC! Calling our custom centralized engine.
+      - name: Compile PDFs and MP3s
+        uses: matt20013/abc_docker@v1
+        with:
+          abc_dir: 'abcs'
+          file_name: 'tunes' # <-- Update this to match the actual .abc filename (without the extension)
+
+      - name: Upload Finished Files
+        uses: actions/upload-artifact@v4
+        with:
+          name: compiled-test-tunebook
+          path: |
+            pdfs/
+            mp3s/
